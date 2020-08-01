@@ -10,6 +10,9 @@ import manage from "./modules/manage"
 import cate from "./modules/cate"
 import spec from "./modules/spec"
 import goods from "./modules/goods"
+import member from './modules/member'
+import banner from './modules/banner'
+import seckill from './modules/seckill'
 export default new Vuex.Store({
     state,
     mutations,
@@ -21,6 +24,10 @@ export default new Vuex.Store({
         manage,
         cate,
         spec,
-        goods
+        goods,
+        member,
+        banner,
+        seckill
+        
     }
 })

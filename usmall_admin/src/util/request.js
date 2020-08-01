@@ -1,15 +1,25 @@
-import axios from "axios"
-import qs from "qs"
-
-//响应拦截
-axios.interceptors.response.use(res => {
-    console.group("本次路径：" + res.config.url)
-    console.log(res)
-    console.groupEnd()
-    return res;
+import axios from 'axios'
+import qs from 'qs'
+import store from "../store"
+import {warningAlert} from "./alert"
+import router from "../router"
+// 请求拦截
+axios.interceptors.request.use(config => {
+    if (config.url != baseUrl + '/api/userlogin') {
+        config.headers.authorization = store.state.user.token;
+    }
+    return config
 })
 
-const baseUrl = "/api"
+axios.interceptors.response.use(res=>{
+    if(res.data.msg==="登录已过期或访问权限受限"){
+        warningAlert("登录已过期或访问权限受限")
+        router.push("/login");
+        return;
+    }
+    return res;
+})
+const baseUrl='/api'
 
 //菜单添加
 export const requestMenuAdd = (params) => {
@@ -135,6 +145,14 @@ export const requestLogin=params=>axios({
     method:"post",
     data:qs.stringify(params)
 })
+
+export const requestManageLogin=(data)=>{
+    return axios({
+        url:baseUrl+"/api/userlogin",
+        method:"post",
+        data:qs.stringify(data)
+    })
+}
 
 //分类添加
 export const requestCateAdd = (params) => {
@@ -296,5 +314,125 @@ export const requestGoodsDelete = params => {
         url: baseUrl + "/api/goodsdelete",
         method: "post",
         data: qs.stringify(params)
+    })
+}
+
+
+// 会员列表
+export const requestMemberList=(params)=>{
+    return axios({
+        url:baseUrl+'/api/memberlist',
+        method:'get',
+        params:params
+    })
+   }
+   //获取一条会员数据
+export const requestMemberDetail=(params)=>{
+    return axios({
+        url:baseUrl+'/api/memberinfo',
+        method:'get',
+        params:params
+    })
+}
+//会员修改
+export const requestMemberUpdate=(data)=>{
+    return axios({
+        url:baseUrl+'/api/memberedit',
+        method:'post',
+        data:qs.stringify(data)
+    })
+}
+
+
+
+
+
+// 轮播图添加
+export const requestBannerAdd=(data)=>{
+    var fromData=new FormData
+     for(let i in data){
+         fromData.append(i,data[i])
+     }
+    return axios({
+        url:baseUrl+'/api/banneradd',
+        method:'post',
+        data:fromData
+    })
+}
+// 轮播图列表
+export const requestBannerList=()=>{
+ return axios({
+     url:baseUrl+'/api/bannerlist',
+     method:'get',
+ })
+}
+//获取一条轮播图数据
+export const requestBannerDetail=(params)=>{
+    return axios({
+        url:baseUrl+'/api/bannerinfo',
+        method:'get',
+        params:params
+    })
+}
+//轮播图修改
+export const requestBannerUpdate=(data)=>{
+    var fromData=new FormData
+    for(let i in data){
+        fromData.append(i,data[i])
+    }
+    return axios({
+        url:baseUrl+'/api/banneredit',
+        method:'post',
+        data:fromData
+    })
+}
+// 轮播图删除
+export const requestBannerDelete=(data)=>{
+    return axios({
+        url:baseUrl+'/api/bannerdelete',
+        method:'post',
+        data:qs.stringify(data)
+    })
+}
+
+
+// 活动添加
+export const requestSeckillAdd=(data)=>{
+    return axios({
+        url:baseUrl+'/api/seckadd',
+        method:'post',
+        data: qs.stringify(data)
+    })
+}
+// 活动列表
+export const requestSeckillList=()=>{
+ return axios({
+     url:baseUrl+'/api/secklist',
+     method:'get',
+ })
+}
+//获取一条活动数据
+export const requestSeckillDetail=(params)=>{
+    return axios({
+        url:baseUrl+'/api/seckinfo',
+        method:'get',
+        params:params
+    })
+}
+//活动修改
+export const requestSeckillUpdate=(data)=>{
+   
+    return axios({
+        url:baseUrl+'/api/seckedit',
+        method:'post',
+        data:qs.stringify(data)
+    })
+}
+// 活动删除
+export const requestSeckillDelete=(data)=>{
+    return axios({
+        url:baseUrl+'/api/seckdelete',
+        method:'post',
+        data:qs.stringify(data)
     })
 }

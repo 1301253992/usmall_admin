@@ -2,8 +2,8 @@
   <div class="login">
     <div class="con">
       <h3>登录</h3>
-      <el-input class="input" clearable v-model="name" placeholder="请输入用户名"></el-input>
-      <el-input class="input" clearable show-password v-model="password" placeholder="请输入密码"></el-input>
+      <el-input v-model="user.username" class="input" clearable></el-input>
+      <el-input v-model="user.password" class="input" clearable show-password></el-input>
       <div class="btn-box">
         <el-button type="primary" @click="login">登录</el-button>
       </div>
@@ -11,18 +11,39 @@
   </div>
 </template>
 <script>
+import {requestLogin} from "../../util/request"
+import {successAlert,warningAlert} from "../../util/alert"
+import {mapActions} from "vuex"
 export default {
   components: {},
   data() {
     return {
-      name: "",
-      password: "",
+      user:{
+        username:"",
+        password:""
+      }
     };
   },
   methods: {
-    login() {
-      this.$router.push("/");
-    },
+    ...mapActions({
+      "changeUser":"changeUser"
+    }),
+      login(){
+          // this.$router.push("/")
+          console.log(this.user);
+          requestLogin(this.user).then(res=>{
+            if(res.data.code===200){
+              //登录成功
+              successAlert("登录成功")
+              //vuex保存了用户信息
+              this.changeUser(res.data.list)
+              //跳转页面
+              this.$router.push("/home")
+            }else{
+              warningAlert(res.data.msg)
+            }
+          })
+      }
   },
   mounted() {},
 };
@@ -34,7 +55,7 @@ export default {
   background: linear-gradient(to right, #553444, #303d60);
 }
 .con {
-  width: 300px;
+  width: 400px;
   padding: 20px;
   background: #fff;
   border-radius: 20px;
@@ -50,7 +71,6 @@ h3 {
 }
 .input {
   margin-bottom: 20px;
-  width: 300px;
 }
 .btn-box {
   text-align: center;

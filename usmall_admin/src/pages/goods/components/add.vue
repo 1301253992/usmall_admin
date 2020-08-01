@@ -8,7 +8,7 @@
             <!-- 动态数据 -->
             <el-option
               v-for="item in cateList"
-              :key="item.id"
+              :key="item.catename"
               :label="item.catename"
               :value="item.id"
             ></el-option>
